@@ -4,11 +4,6 @@
 #include <zlib.h>
 #include <stdexcept>
 
-
-#ifdef _MSC_VER
-#  pragma comment(lib, "zlibstatic.lib")
-#endif
-
 namespace
 {
     constexpr size_t CHUNK = 16 * 1024;

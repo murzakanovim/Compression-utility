@@ -1,3 +1,4 @@
+#include <pqxx/pqxx>
 #include <zlib.h>
 #include "compress.h"
 

@@ -146,6 +146,7 @@
     <ClCompile Include="compress.cpp" />
     <ClCompile Include="convert.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="compress.h" />

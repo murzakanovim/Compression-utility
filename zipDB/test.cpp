@@ -5,13 +5,23 @@
 #include <iterator>
 #include <vector>
 #include <fstream>
-#include <codecvt>
-#include <Windows.h>
+
 
 #include <pqxx/pqxx>
 #include <zlib.h>
-#include "convert.h"
 #include "compress.h"
+
+std::string toBinary(int dec)
+{
+    std::string res;
+    res.resize(8);
+    for (int i = 0; i < 8; i++)
+    {
+        res[7 - i] = (dec % 2 + 48);
+        dec /= 2;
+    }
+    return res;
+}
 
 int calculateSizeOfString(const char* ptr)
 {
@@ -20,7 +30,7 @@ int calculateSizeOfString(const char* ptr)
     {
         i++;
     }
-    return i - 1;
+    return i;
 }
 
 std::string ConvertWideToUtf8(const std::wstring& wstr)
@@ -39,21 +49,24 @@ int main()
     pqxx::work oldWorker(oldConnection);
     pqxx::result res = oldWorker.exec("SELECT event FROM t_event LIMIT 1");
     auto vec = NConsulUtils::zip(res[0][0].c_str(), calculateSizeOfString(res[0][0].c_str()));
-    std::wstring wstr;
+    std::string utf8;
+    utf8.clear();
     for (auto a : vec)
     {
-        wstr.push_back(a);
+        utf8 += toBinary(a);
+        utf8.push_back(' ');
     }
-    auto utf8 = ConvertWideToUtf8(wstr);
+
     
     std::string query = "INSERT INTO test(test) VALUES('" + utf8 + '\'' + ')' + ';';
-    out << query;
     try
     {
         oldWorker.exec(query);
+        oldWorker.commit();
     }
     catch (const std::exception& exc)
     {
         out << exc.what();
     }
+
 }

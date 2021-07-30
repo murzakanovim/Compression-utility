@@ -1,7 +1,5 @@
 #include "tools.h"
-
 #include <string>
-
 #include "column_info_t.h"
 #include "compress.h"
 
@@ -24,7 +22,7 @@ int calculateSizeOfString(const char* ptr)
     {
         i++;
     }
-    return i;
+    return i;//?
 }
 
 std::pair<std::vector<uint8_t>, std::vector<uint8_t>> getZipVecs(const pqxx::row& row)
@@ -37,11 +35,11 @@ std::pair<std::vector<uint8_t>, std::vector<uint8_t>> getZipVecs(const pqxx::row
 
 std::string getResultQuery(column_info_t ci)
 {
-    std::string base = "INSERT INTO t_event (type, subjects, timestamp, zip_event, zip_ts_vector) VALUES";
-    std::string resultString = base + '(' + ci.type + ',' +
-        '\'' + ci.subjects + '\'' + ',' +
-        '\'' + ci.timestamp + '\'' + ',' +
-        '\'' + ci.zip_event + '\'' + ',' +
-        '\'' + ci.zip_ts_vector + '\'' + ')' + ';';
+    std::string base = "INSERT INTO t_event VALUES";
+    std::string resultString = base + '(' + ci.type + ',' + ' '
+         + '\'' + ci.subjects + '\'' + ',' + ' '
+         + '\'' + ci.timestamp + '\'' + ',' + ' ' 
+         + '\'' + ci.zip_event + '\'' + ',' + ' '
+        +  '\'' + ci.zip_ts_vector + '\'' + ')' + ';';
     return resultString;
 }

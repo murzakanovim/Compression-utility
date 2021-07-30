@@ -146,7 +146,6 @@
     <ClCompile Include="column_info_t.cpp" />
     <ClCompile Include="compress.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="test.cpp" />
     <ClCompile Include="tools.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -143,14 +143,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="column_info_t.cpp" />
     <ClCompile Include="compress.cpp" />
-    <ClCompile Include="convert.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="test.cpp" />
+    <ClCompile Include="tools.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="column_info_t.h" />
     <ClInclude Include="compress.h" />
-    <ClInclude Include="convert.h" />
+    <ClInclude Include="tools.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

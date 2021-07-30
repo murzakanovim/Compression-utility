@@ -3,7 +3,7 @@
 
 #include <string>
 #include <vector>
-#include <pqxx/pqxx>
+#include <pqxx/row>
 
 struct column_info_t
 {

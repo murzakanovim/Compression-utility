@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <pqxx/row>
 
 #include "tools.h"
 
@@ -10,13 +11,13 @@ column_info_t::column_info_t(const pqxx::row& row, const std::vector<uint8_t>& z
     type = row[0].c_str();
     subjects = row[1].c_str();
     timestamp = row[2].c_str();
-    for (auto a: zip_event_info)
+    for (auto byte: zip_event_info)
     {
-        zip_event += toBinary(a);
+        zip_event += toBinary(byte);
     }
 
-    for (auto b : zip_ts_vector_info)
+    for (auto byte : zip_ts_vector_info)
     {
-        zip_ts_vector += toBinary(b);
+        zip_ts_vector += toBinary(byte);
     }
 }

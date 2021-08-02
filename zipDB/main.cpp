@@ -18,6 +18,7 @@ int main()
     pqxx::connection oldConnection(oldConnectionSetting);
     pqxx::work oldWorker(oldConnection); 
     pqxx::result res = oldWorker.exec("SELECT * FROM t_event LIMIT 100000");
+    oldWorker.commit();
    
     std::string newConnectionSetting("host=localhost port=5432 user=ngp dbname=ngpNew password=123456");
     pqxx::connection newConnection(newConnectionSetting);
@@ -31,8 +32,9 @@ int main()
             auto pair = getZipVecs(row);
             column_info_t column(row, pair.first, pair.second);//умирает где-то здесь
             newWorker.exec_prepared("insert", column.type, column.subjects, column.timestamp, column.zip_event, column.zip_ts_vector);
+            newWorker.commit(); 
         }
-        newWorker.commit();
+        
     }
     catch (const std::exception& exc)
     {        

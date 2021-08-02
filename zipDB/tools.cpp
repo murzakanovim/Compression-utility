@@ -3,17 +3,17 @@
 #include "column_info_t.h"
 #include "compress.h"
 
-std::string toBinary(int dec)
-{
-    std::string res;
-    res.resize(8);
-    for (int i = 0; i < 8; i++)
-    {
-        res[7 - i] = (dec % 2 + 48);
-        dec /= 2;
-    }
-    return res;
-}
+//std::string toBinary(int dec)
+//{
+//    std::string res;
+//    res.resize(8);
+//    for (int i = 0; i < 8; i++)
+//    {
+//        res[7 - i] = (dec % 2 + 48);
+//        dec /= 2;
+//    }
+//    return res;
+//}
 
 int calculateSizeOfString(const char* ptr)
 {

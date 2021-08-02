@@ -33,13 +33,13 @@ std::pair<std::vector<uint8_t>, std::vector<uint8_t>> getZipVecs(const pqxx::row
     return std::pair<std::vector<uint8_t>, std::vector<uint8_t>>(vecEvent, vecTsVector);
 }
 
-std::string getResultQuery(column_info_t ci)
-{
-    std::string base = "INSERT INTO t_event VALUES";
-    std::string resultString = base + '(' + ci.type + ',' + ' '
-         + '\'' + ci.subjects + '\'' + ',' + ' '
-         + '\'' + ci.timestamp + '\'' + ',' + ' ' 
-         + '\'' + ci.zip_event + '\'' + ',' + ' '
-        +  '\'' + ci.zip_ts_vector + '\'' + ')' + ';';
-    return resultString;
-}
+//std::string getResultQuery(column_info_t ci)
+//{
+//    std::string base = "INSERT INTO t_event VALUES";
+//    std::string resultString = base + '(' + ci.type + ',' + ' '
+//         + '\'' + ci.subjects + '\'' + ',' + ' '
+//         + '\'' + ci.timestamp + '\'' + ',' + ' ' 
+//         + '\'' + ci.zip_event + '\'' + ',' + ' '
+//        +  '\'' + ci.zip_ts_vector + '\'' + ')' + ';';
+//    return resultString;
+//}

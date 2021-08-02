@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <pqxx/row>
+#include <pqxx/blob>
 
 struct column_info_t
 {
@@ -12,8 +13,8 @@ struct column_info_t
     std::string type;
     std::string subjects;
     std::string timestamp;
-    std::string zip_event;
-    std::string zip_ts_vector;
+    std::basic_string< std::byte > zip_event;
+    std::basic_string< std::byte > zip_ts_vector;
 };
 
 #endif

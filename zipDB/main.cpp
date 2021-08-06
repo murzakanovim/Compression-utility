@@ -10,10 +10,14 @@
 #include "column_info_t.h"
 #include "tools.h"
 #include "compress.h"
+//что-то что возвращает worker и сохраняет connection
+//исключение не должно завершать программу
+//вынести цикл
+//сделать что-то, что обрабатывает одну запись
+//обрабатывать по 1000
 
 int main()
 {
-    std::fstream out("out.txt");
     std::string oldConnectionSetting("host=localhost port=5432 user=ngp dbname=ngp password=123456");
     pqxx::connection oldConnection(oldConnectionSetting);
     pqxx::work oldWorker(oldConnection); 

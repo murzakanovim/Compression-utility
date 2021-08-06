@@ -146,11 +146,13 @@
     <ClCompile Include="column_info_t.cpp" />
     <ClCompile Include="compress.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PConnection.cpp" />
     <ClCompile Include="tools.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="column_info_t.h" />
     <ClInclude Include="compress.h" />
+    <ClInclude Include="PConnection.h" />
     <ClInclude Include="tools.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

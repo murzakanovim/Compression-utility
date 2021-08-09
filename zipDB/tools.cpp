@@ -14,5 +14,5 @@ void executeOneNote(const pqxx::row& row, pqxx::work& zipWorker)
 
 std::basic_string_view< std::byte > getZipString(const std::string& event)
 {
-    return pqxx::binary_cast(NConsulUtils::zip(event.c_str(), event.size(), NConsulUtils::ECompressionLevel::BEST));
+    return pqxx::binary_cast(NConsulUtils::zip(event.data(), event.size()));
 }

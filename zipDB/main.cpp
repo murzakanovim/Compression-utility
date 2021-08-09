@@ -22,7 +22,7 @@ int execute(pqxx::work& worker, pqxx::work& zipWorker)
     int id = 0;
     while (true)
     {
-        std::string query = "SELECT * FROM t_event ORDER BY timestamp DESC LIMIT 1000 OFFSET " + std::to_string(id);
+        std::string query = "SELECT * FROM t_event ORDER BY timestamp DESC LIMIT 10000 OFFSET " + std::to_string(id);
         pqxx::result res = worker.exec(query);
         
         if (res.empty())
@@ -34,7 +34,7 @@ int execute(pqxx::work& worker, pqxx::work& zipWorker)
         {
             executeOneNote(row, zipWorker);
         }
-        id += 1000;
+        id += 10000;
         if (id % 500000 == 0)
         {
             zipWorker.commit();
@@ -68,4 +68,5 @@ int main()
     {
         std::cerr << exc.what();
     }
+    return 0;
 }

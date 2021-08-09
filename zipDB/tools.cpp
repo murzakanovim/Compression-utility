@@ -1,45 +1,18 @@
 #include "tools.h"
 #include <string>
+#include <pqxx/pqxx>
 #include "column_info_t.h"
 #include "compress.h"
+#include "PConnection.h"
 
-//std::string toBinary(int dec)
-//{
-//    std::string res;
-//    res.resize(8);
-//    for (int i = 0; i < 8; i++)
-//    {
-//        res[7 - i] = (dec % 2 + 48);
-//        dec /= 2;
-//    }
-//    return res;
-//}
-
-int calculateSizeOfString(const char* ptr)
+void executeOneNote(const pqxx::row& row, pqxx::work& newWorker)
 {
-    int i = 0;
-    while (ptr[i] != '\0')
-    {
-        i++;
-    }
-    return i;//?
+    auto zipString = getZipString(row.at("event").as < std::string >());
+    column_info_t column(row, zipString);
+    newWorker.exec_prepared("insert", column.type, column.subjects, column.timestamp, column.zip_event, column.ts_vector);
 }
 
-std::pair<std::vector<uint8_t>, std::vector<uint8_t>> getZipVecs(const pqxx::row& row)
+std::basic_string_view< std::byte > getZipString(const std::string& event)
 {
-    auto vecEvent = NConsulUtils::zip(row[3].c_str(), calculateSizeOfString(row[3].c_str()));
-    auto vecTsVector = NConsulUtils::zip(row[4].c_str(), calculateSizeOfString(row[4].c_str()));
-
-    return std::pair<std::vector<uint8_t>, std::vector<uint8_t>>(vecEvent, vecTsVector);
+    return pqxx::binary_cast(NConsulUtils::zip(event.c_str(), event.size()));
 }
-
-//std::string getResultQuery(column_info_t ci)
-//{
-//    std::string base = "INSERT INTO t_event VALUES";
-//    std::string resultString = base + '(' + ci.type + ',' + ' '
-//         + '\'' + ci.subjects + '\'' + ',' + ' '
-//         + '\'' + ci.timestamp + '\'' + ',' + ' ' 
-//         + '\'' + ci.zip_event + '\'' + ',' + ' '
-//        +  '\'' + ci.zip_ts_vector + '\'' + ')' + ';';
-//    return resultString;
-//}

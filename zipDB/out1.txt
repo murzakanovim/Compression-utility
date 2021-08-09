@@ -1,0 +1,4 @@
+Can't init zlib!�шибка синтаксиса (примерное положение: "OFSET")
+LINE 1: ...* FROM t_event ORDER BY timestamp DESC LIMIT 1000 OFSET 1000
+                                                             ^
+                         ^

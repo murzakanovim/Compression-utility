@@ -8,13 +8,12 @@
 
 struct column_info_t
 {
-    column_info_t(const pqxx::row& row, const std::vector< uint8_t >& zip_event_info,
-        const std::vector< uint8_t >& zip_ts_vector_info);
+    column_info_t(const pqxx::row& row, const std::basic_string_view< std::byte >& zip_event_info);
     std::string type;
     std::string subjects;
     std::string timestamp;
-    std::basic_string< std::byte > zip_event;
-    std::basic_string< std::byte > zip_ts_vector;
+    std::basic_string_view< std::byte > zip_event;
+    std::string ts_vector;
 };
 
 #endif

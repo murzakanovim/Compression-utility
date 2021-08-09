@@ -13,7 +13,6 @@ public:
 	pqxx::work getWorker();
 private:
 	pqxx::connection m_connection;
-	
 };
 
 #endif

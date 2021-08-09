@@ -7,11 +7,11 @@
 
 #include "tools.h"
 
-column_info_t::column_info_t(const pqxx::row& row, const std::vector<uint8_t>& zip_event_info, const std::vector<uint8_t>& zip_ts_vector_info):
-    type(row[0].c_str()),
-    subjects(row[1].c_str()),
-    timestamp(row[2].c_str()),
-    zip_event(pqxx::binary_cast(zip_event_info)),
-    zip_ts_vector(pqxx::binary_cast(zip_ts_vector_info))
+column_info_t::column_info_t(const pqxx::row& row, const std::basic_string_view< std::byte >& zip_event_info):
+    type(row.at("type").as< std::string >()),
+    subjects(row.at("subjects").as< std::string >()),
+    timestamp(row.at("timestamp").as< std::string >()),
+    zip_event(zip_event_info),
+    ts_vector(row.at("ts_vector").as< std::string >())
 {
 }

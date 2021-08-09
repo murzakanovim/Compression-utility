@@ -7,41 +7,64 @@
 
 #include <pqxx/pqxx>
 #include <zlib.h>
+
+#include "PConnection.h"
 #include "column_info_t.h"
 #include "tools.h"
 #include "compress.h"
-//что-то что возвращает worker и сохраняет connection
+//что-то что возвращает worker и сохраняет connection // почти сделано
 //исключение не должно завершать программу
 //вынести цикл
 //сделать что-то, что обрабатывает одну запись
 //обрабатывать по 1000
 
+bool execute(pqxx::work& oldWorker, pqxx::work& newWorker)
+{
+    int id = 0;
+    while (true)
+    {
+        std::string query = "SELECT * FROM t_event ORDER BY timestamp DESC LIMIT 1000 OFFSET " + std::to_string(id);
+        pqxx::result res = oldWorker.exec(query);
+        
+        if (res.empty())
+        {
+            break;
+        }
+
+        for (const auto& row : res)
+        {
+            executeOneNote(row, newWorker);
+        }
+        id += 1000;
+    }
+    return true;
+}
+
 int main()
 {
-    std::string oldConnectionSetting("host=localhost port=5432 user=ngp dbname=ngp password=123456");
-    pqxx::connection oldConnection(oldConnectionSetting);
-    pqxx::work oldWorker(oldConnection); 
-    pqxx::result res = oldWorker.exec("SELECT * FROM t_event LIMIT 100000");
-    oldWorker.commit();
-   
-    std::string newConnectionSetting("host=localhost port=5432 user=ngp dbname=ngpNew password=123456");
-    pqxx::connection newConnection(newConnectionSetting);
-    pqxx::work newWorker(newConnection);
-
-    newConnection.prepare("insert", "INSERT INTO t_event (type, subjects, timestamp, zip_event, zip_ts_vector) VALUES($1, $2, $3, $4, $5);");
+    std::fstream out("out1.txt");
+    std::string host = "localhost";
+    std::string port = "5432";
+    std::string dbname = "ngp";
+    std::string user = "ngp";
+    std::string newDbName = "ngpNew";
+    std::string password = "123456";
     try
     {
-        for (const auto& row : res)
-        {            
-            auto pair = getZipVecs(row);
-            column_info_t column(row, pair.first, pair.second);//умирает где-то здесь
-            newWorker.exec_prepared("insert", column.type, column.subjects, column.timestamp, column.zip_event, column.zip_ts_vector);
-            newWorker.commit(); 
+        PConnection conn(host, port, dbname, user, password);
+        pqxx::work oldWorker = conn.getWorker();
+
+        PConnection connNew(host, port, newDbName, user, password);
+        pqxx::work newWorker = connNew.getWorker();
+        newWorker.conn().prepare("insert", "INSERT INTO t_event (type, subjects, timestamp, zip_event, ts_vector) VALUES($1, $2, $3, $4, $5);");
+        if (execute(oldWorker, newWorker))
+        {
+            newWorker.commit();
         }
-        
     }
     catch (const std::exception& exc)
-    {        
-        std::cerr << exc.what();
+    {
+        out << exc.what();
     }
+   
 }

@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <iterator>
 #include <vector>
-#include <fstream>
 
 #include <pqxx/pqxx>
 #include <zlib.h>
@@ -18,13 +17,13 @@
 //сделать что-то, что обрабатывает одну запись
 //обрабатывать по 1000
 
-bool execute(pqxx::work& oldWorker, pqxx::work& newWorker)
+int execute(pqxx::work& worker, pqxx::work& zipWorker)
 {
     int id = 0;
     while (true)
     {
         std::string query = "SELECT * FROM t_event ORDER BY timestamp DESC LIMIT 1000 OFFSET " + std::to_string(id);
-        pqxx::result res = oldWorker.exec(query);
+        pqxx::result res = worker.exec(query);
         
         if (res.empty())
         {
@@ -33,16 +32,19 @@ bool execute(pqxx::work& oldWorker, pqxx::work& newWorker)
 
         for (const auto& row : res)
         {
-            executeOneNote(row, newWorker);
+            executeOneNote(row, zipWorker);
         }
         id += 1000;
+        if (id % 500000 == 0)
+        {
+            zipWorker.commit();
+        }
     }
     return true;
 }
 
 int main()
 {
-    std::fstream out("out1.txt");
     std::string host = "localhost";
     std::string port = "5432";
     std::string dbname = "ngp";
@@ -52,19 +54,18 @@ int main()
     try
     {
         PConnection conn(host, port, dbname, user, password);
-        pqxx::work oldWorker = conn.getWorker();
+        pqxx::work worker = conn.getWorker();
 
-        PConnection connNew(host, port, newDbName, user, password);
-        pqxx::work newWorker = connNew.getWorker();
-        newWorker.conn().prepare("insert", "INSERT INTO t_event (type, subjects, timestamp, zip_event, ts_vector) VALUES($1, $2, $3, $4, $5);");
-        if (execute(oldWorker, newWorker))
+        PConnection zipConn(host, port, newDbName, user, password);
+        pqxx::work zipWorker = zipConn.getWorker();
+        zipWorker.conn().prepare("insert", "INSERT INTO t_event (type, subjects, timestamp, zip_event, ts_vector) VALUES($1, $2, $3, $4, $5);");
+        if (execute(worker, zipWorker))
         {
-            newWorker.commit();
+            zipWorker.commit();
         }
     }
     catch (const std::exception& exc)
     {
-        out << exc.what();
+        std::cerr << exc.what();
     }
-   
 }

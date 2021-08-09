@@ -3,6 +3,8 @@
 #include <cassert>
 #include <zlib.h>
 #include <stdexcept>
+#include <iostream>
+#include <boost/scope_exit.hpp>
 
 namespace
 {
@@ -55,9 +57,10 @@ namespace NConsulUtils
         if (ret != Z_OK)
             throw std::runtime_error("Can't init zlib!");
 
-        //BOOST_SCOPE_EXIT_ALL(&strm) {
-         //   (void)deflateEnd(&strm);
-        //};
+        BOOST_SCOPE_EXIT_ALL(&strm) 
+        {
+           (void)deflateEnd(&strm);
+        };
 
         strm.avail_in = size;
         strm.next_in = const_cast<Bytef*>(reinterpret_cast<Bytef const*>(data)); // input char array
@@ -114,7 +117,7 @@ namespace NConsulUtils
             throw std::runtime_error("Can't setup zlib for decompression!");
 
         //BOOST_SCOPE_EXIT_ALL(&strm) {
-        //   inflateEnd(&strm);
+           inflateEnd(&strm);
         //};
 
         strm.avail_in = size;

@@ -17,7 +17,7 @@
 //сделать что-то, что обрабатывает одну запись
 //обрабатывать по 1000
 
-int execute(pqxx::work& worker, pqxx::work& zipWorker)
+void execute(pqxx::work& worker, pqxx::work& zipWorker)
 {
     int id = 0;
     while (true)
@@ -35,12 +35,7 @@ int execute(pqxx::work& worker, pqxx::work& zipWorker)
             executeOneNote(row, zipWorker);
         }
         id += 10000;
-        if (id % 500000 == 0)
-        {
-            zipWorker.commit();
-        }
     }
-    return true;
 }
 
 int main()
@@ -59,10 +54,8 @@ int main()
         PConnection zipConn(host, port, newDbName, user, password);
         pqxx::work zipWorker = zipConn.getWorker();
         zipWorker.conn().prepare("insert", "INSERT INTO t_event (type, subjects, timestamp, zip_event, ts_vector) VALUES($1, $2, $3, $4, $5);");
-        if (execute(worker, zipWorker))
-        {
-            zipWorker.commit();
-        }
+        execute(worker, zipWorker);
+        zipWorker.commit();
     }
     catch (const std::exception& exc)
     {

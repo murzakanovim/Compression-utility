@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <iterator>
 #include <vector>
+#include <optional>
 
 #include <pqxx/pqxx>
 #include <zlib.h>
@@ -17,9 +18,9 @@
 //сделать что-то, что обрабатывает одну запись
 //обрабатывать по 1000
 
-int execute(pqxx::work& worker, pqxx::work& zipWorker)
+std::optional< int > execute(pqxx::work& worker, pqxx::work& zipWorker, int id = 0)
 {
-    int id = 0;
+    int current = id;
     while (true)
     {
         std::string query = "SELECT * FROM t_event ORDER BY timestamp DESC LIMIT 10000 OFFSET " + std::to_string(id);
@@ -29,18 +30,23 @@ int execute(pqxx::work& worker, pqxx::work& zipWorker)
         {
             break;
         }
-
         for (const auto& row : res)
         {
-            executeOneNote(row, zipWorker);
+            try
+            {
+                executeOneNote(row, zipWorker);
+                ++current;
+                if (id > 5)
+                    throw std::runtime_error("");
+            }
+            catch (const std::exception&)
+            {
+                return {current};
+            }
         }
         id += 10000;
-        if (id % 500000 == 0)
-        {
-            zipWorker.commit();
-        }
     }
-    return true;
+    return std::nullopt;
 }
 
 int main()
@@ -59,9 +65,10 @@ int main()
         PConnection zipConn(host, port, newDbName, user, password);
         pqxx::work zipWorker = zipConn.getWorker();
         zipWorker.conn().prepare("insert", "INSERT INTO t_event (type, subjects, timestamp, zip_event, ts_vector) VALUES($1, $2, $3, $4, $5);");
-        if (execute(worker, zipWorker))
+        auto fail = execute(worker, zipWorker);
+        if (fail)
         {
-            zipWorker.commit();
+            execute(worker, zipWorker, fail.value());
         }
     }
     catch (const std::exception& exc)

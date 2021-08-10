@@ -1,8 +1,5 @@
 ﻿#include <string>
 #include <iostream>
-#include <algorithm>
-#include <iterator>
-#include <vector>
 
 #include <pqxx/pqxx>
 #include <zlib.h>

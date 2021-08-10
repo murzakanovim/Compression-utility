@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 #include <pqxx/row>
-#include <pqxx/blob>
 
 #include "tools.h"
 

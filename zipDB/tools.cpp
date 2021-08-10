@@ -1,6 +1,8 @@
 #include "tools.h"
+
 #include <string>
 #include <pqxx/pqxx>
+
 #include "column_info_t.h"
 #include "compress.h"
 #include "PConnection.h"

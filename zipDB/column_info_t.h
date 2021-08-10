@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 #include <pqxx/row>
-#include <pqxx/blob>
 
 struct column_info_t
 {

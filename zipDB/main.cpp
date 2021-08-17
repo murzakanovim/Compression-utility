@@ -52,6 +52,7 @@ int main()
         PConnection zipConn(host, port, newDbName, user, password);
         pqxx::work zipWorker = zipConn.getWorker();
         zipWorker.conn().prepare("insert", "INSERT INTO t_event (type, subjects, timestamp, zip_event, ts_vector) VALUES($1, $2, $3, $4, $5);");
+        //TODO: убрать prepare внутрь execute
         execute(worker, zipWorker);
         zipWorker.commit();
     }

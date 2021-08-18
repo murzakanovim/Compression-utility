@@ -1,7 +1,6 @@
 #include "column_info_t.h"
 
 #include <string>
-#include <vector>
 #include <pqxx/row>
 
 #include "tools.h"

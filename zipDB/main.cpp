@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include <pqxx/pqxx>
+#include <pqxx/except.hxx>
 #include <zlib.h>
 
 #include "PConnection.h"
@@ -17,6 +18,7 @@
 
 void execute(pqxx::work& worker, pqxx::work& zipWorker)
 {
+    zipWorker.conn().prepare("insert", "INSERT INTO t_event (type, subjects, timestamp, zip_event, ts_vector) VALUES($1, $2, $3, $4, $5);");
     int id = 0;
     while (true)
     {
@@ -28,9 +30,17 @@ void execute(pqxx::work& worker, pqxx::work& zipWorker)
             break;
         }
 
-        for (const auto& row : res)
+        try
         {
-            executeOneNote(row, zipWorker);
+            for (const auto& row : res)
+            {
+                executeOneNote(row, zipWorker);
+            }
+        }
+        catch (const std::exception&)
+        {
+            zipWorker.commit();
+            throw;
         }
         id += 10000;
     }
@@ -51,8 +61,7 @@ int main()
 
         PConnection zipConn(host, port, newDbName, user, password);
         pqxx::work zipWorker = zipConn.getWorker();
-        zipWorker.conn().prepare("insert", "INSERT INTO t_event (type, subjects, timestamp, zip_event, ts_vector) VALUES($1, $2, $3, $4, $5);");
-        //TODO: убрать prepare внутрь execute
+
         execute(worker, zipWorker);
         zipWorker.commit();
     }

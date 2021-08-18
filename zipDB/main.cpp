@@ -52,14 +52,14 @@ int main()
     std::string port = "5432";
     std::string dbname = "ngp";
     std::string user = "ngp";
-    std::string newDbName = "ngpNew";
+    std::string zipDbName = "ngpNew";
     std::string password = "123456";
     try
     {
         PConnection conn(host, port, dbname, user, password);
         pqxx::work worker = conn.getWorker();
 
-        PConnection zipConn(host, port, newDbName, user, password);
+        PConnection zipConn(host, port, zipDbName, user, password);
         pqxx::work zipWorker = zipConn.getWorker();
 
         execute(worker, zipWorker);

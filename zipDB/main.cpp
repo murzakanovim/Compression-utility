@@ -18,30 +18,34 @@
 
 void execute(pqxx::work& worker, pqxx::work& zipWorker)
 {
+    //счетчик 
     zipWorker.conn().prepare("insert", "INSERT INTO t_event (type, subjects, timestamp, zip_event, ts_vector) VALUES($1, $2, $3, $4, $5);");
     int id = 0;
     while (true)
     {
+        //сколько было
+        //сколько стало
+        
         std::string query = "SELECT * FROM t_event ORDER BY timestamp DESC LIMIT 10000 OFFSET " + std::to_string(id);
         pqxx::result res = worker.exec(query);
-        
+
         if (res.empty())
         {
             break;
         }
 
-        try
+        for (const auto& row : res)
         {
-            for (const auto& row : res)
+            try
             {
                 executeOneNote(row, zipWorker);
             }
+            catch (const std::exception&)
+            {
+                std::cerr << "";//
+            }
         }
-        catch (const std::exception&)
-        {
-            zipWorker.commit();
-            throw;
-        }
+        zipWorker.commit();
         id += 10000;
     }
 }

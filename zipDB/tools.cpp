@@ -9,8 +9,8 @@
 
 void executeOneNote(const pqxx::row& row, pqxx::work& zipWorker)
 {
-    auto zipString = getZipString(row.at("event").as < std::string >());
-    column_info_t column(row, zipString);
+    auto zipString = getZipString(row.at("event").as< std::string >());
+    column_info_t column(row, zipString);//ненужно
     zipWorker.exec_prepared("insert", column.type, column.subjects, column.timestamp, column.zip_event, column.ts_vector);
 }
 

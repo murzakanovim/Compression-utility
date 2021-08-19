@@ -27,7 +27,7 @@
     <ClCompile Include="tools.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="PConnection.cpp">
+    <ClCompile Include="CConnection.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,7 +41,7 @@
     <ClInclude Include="tools.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="PConnection.h">
+    <ClInclude Include="CConnection.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

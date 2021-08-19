@@ -5,7 +5,7 @@
 
 #include "column_info_t.h"
 #include "compress.h"
-#include "PConnection.h"
+#include "CConnection.h"
 
 void executeOneNote(const pqxx::row& row, pqxx::work& zipWorker)
 {

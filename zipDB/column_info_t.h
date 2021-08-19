@@ -1,5 +1,4 @@
-#ifndef COLUMN_INFO_T_H
-#define COLUMN_INFO_T_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -14,5 +13,3 @@ struct column_info_t
     std::basic_string_view< std::byte > zip_event;
     std::string ts_vector;
 };
-
-#endif

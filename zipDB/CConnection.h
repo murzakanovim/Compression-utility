@@ -5,10 +5,10 @@
 #include <pqxx/connection>
 #include <pqxx/transaction>
 
-class PConnection
+class CConnection
 {
 public:
-	PConnection(const std::string& host, const std::string& port, const std::string& dbname, const std::string& user, const std::string& password);
+	CConnection(const std::string& host, const std::string& port, const std::string& dbname, const std::string& user, const std::string& password);
 	pqxx::work getWorker();
 private:
 	pqxx::connection m_connection;

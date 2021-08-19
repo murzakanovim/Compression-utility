@@ -1,5 +1,4 @@
-#ifndef PCONNECTION_H
-#define PCONNECTION_H
+#pragma once
 
 #include <string>
 
@@ -14,5 +13,3 @@ public:
 private:
 	pqxx::connection m_connection;
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef COMPRESS_H
-#define COMPRESS_H
+#pragma once
 
 #include <cstddef>
 #include <cstdint>
@@ -29,5 +28,3 @@ namespace NConsulUtils
     std::vector<uint8_t> gzip(void const* data, size_t size, ECompressionLevel level = ECompressionLevel::NORMAL);
     std::vector<uint8_t> gunzip(void const* data, size_t size);
 }
-
-#endif

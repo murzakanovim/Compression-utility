@@ -1,5 +1,4 @@
-#ifndef TOOLS_H
-#define TOOLS_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -11,5 +10,3 @@
 
 std::basic_string_view< std::byte > getZipString(const std::string& event);
 void executeOneNote(const pqxx::row& row, pqxx::work& newWorker);
-
-#endif

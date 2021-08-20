@@ -2,6 +2,7 @@
 
 #include <string>
 #include <pqxx/pqxx>
+#include <iostream>
 
 #include "compress.h"
 #include "CConnection.h"
@@ -10,7 +11,6 @@ void executeOneNote(const pqxx::row& row, pqxx::work& zipWorker, unsigned int& b
 {
     std::string event = row.at("event").as< std::string >();
     auto zipString = getZipString(event);
-    
     before += event.size();
     after += zipString.size();
 

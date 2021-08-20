@@ -19,23 +19,28 @@ void execute()
 
     const unsigned int PACK = 500;
 
+    unsigned int total = 0;//счетчик 
     CConnection conn(host, port, dbname, user, password);
     conn.make_prepared_query("select", "SELECT * FROM t_event ORDER BY timestamp DESC LIMIT $1 OFFSET $2");
 
     CConnection zipConn(host, port, zipDbName, user, password);
     zipConn.make_prepared_query("insert", "INSERT INTO t_event(type, subjects, timestamp, zip_event, ts_vector) VALUES($1, $2, $3, $4, $5);");
-    unsigned int total = 0;//счетчик 
     
-    int id = 0;
+    unsigned int id = 0;
     while (true)
     {
+        //const std::string selectQuery = "SELECT * FROM t_event ORDER BY timestamp DESC LIMIT " + std::to_string(PACK) + " OFFSET " + std::to_string(id);
         std::unique_ptr< pqxx::work > worker = conn.getWorker();
+
         std::unique_ptr< pqxx::work > zipWorker = zipConn.getWorker();
+
         unsigned int before = 0;//сколько было
         unsigned int after = 0;//сколько стало
         
         pqxx::result res = worker->exec_prepared("select", PACK, id);
-        worker->commit();
+
+        //pqxx::result res = worker->exec(selectQuery);
+        //worker->commit();
 
         if (res.empty())
         {
@@ -50,7 +55,7 @@ void execute()
             }
             catch (const std::exception&)
             {
-                std::cerr << "Something wrong in LIMIT" + std::to_string(PACK) + "and OFFSET " + std::to_string(id);
+                std::cerr << "Something wrong in LIMIT " + std::to_string(PACK) + " and OFFSET " + std::to_string(id);
             }
         }
         zipWorker->commit();

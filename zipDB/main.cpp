@@ -15,13 +15,26 @@
 //сделать что-то, что обрабатывает одну запись // есть
 //обрабатывать по 10000 //есть
 
-void execute(std::unique_ptr< pqxx::work > worker, std::unique_ptr< pqxx::work > zipWorker)
+void execute()
 {
+    std::string host = "localhost";
+    std::string port = "5432";
+    std::string dbname = "ngp";
+    std::string user = "ngp";
+    std::string zipDbName = "ngpNew";
+    std::string password = "123456";
+
+    CConnection conn(host, port, dbname, user, password);
+    std::unique_ptr< pqxx::work > worker = conn.getWorker();
+
+    CConnection zipConn(host, port, zipDbName, user, password);
     //счетчик 
-    zipWorker->conn().prepare("insert", "INSERT INTO t_event (type, subjects, timestamp, zip_event, ts_vector) VALUES($1, $2, $3, $4, $5);");
+    
     int id = 0;
     while (true)
     {
+        std::unique_ptr< pqxx::work > zipWorker = zipConn.getWorker();
+        zipWorker->conn().prepare("insert", "INSERT INTO t_event (type, subjects, timestamp, zip_event, ts_vector) VALUES($1, $2, $3, $4, $5);");
         //сколько было
         //сколько стало
         
@@ -37,7 +50,7 @@ void execute(std::unique_ptr< pqxx::work > worker, std::unique_ptr< pqxx::work >
         {
             try
             {
-                executeOneNote(row, zipWorker);
+                executeOneNote(row, *zipWorker);
             }
             catch (const std::exception&)
             {
@@ -51,22 +64,9 @@ void execute(std::unique_ptr< pqxx::work > worker, std::unique_ptr< pqxx::work >
 
 int main()
 {
-    std::string host = "localhost";
-    std::string port = "5432";
-    std::string dbname = "ngp";
-    std::string user = "ngp";
-    std::string zipDbName = "ngpNew";
-    std::string password = "123456";
     try
     {
-        CConnection conn(host, port, dbname, user, password);
-        std::unique_ptr< pqxx::work > worker = conn.getWorker();
-
-        CConnection zipConn(host, port, zipDbName, user, password);
-        std::unique_ptr< pqxx::work > zipWorker = zipConn.getWorker();
-
-        execute(std::move(worker), std::move(zipWorker));
-        zipWorker->commit();
+        execute();
     }
     catch (const std::exception& exc)
     {

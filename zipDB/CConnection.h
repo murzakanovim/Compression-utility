@@ -10,6 +10,7 @@ class CConnection
 {
 public:
 	CConnection(const std::string& host, const std::string& port, const std::string& dbname, const std::string& user, const std::string& password);
+	void make_prepared_query(const std::string& queryName, const std::string& query);
 	std::unique_ptr< pqxx::work > getWorker();
 private:
 	pqxx::connection m_connection;

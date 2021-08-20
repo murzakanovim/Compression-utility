@@ -7,6 +7,11 @@ CConnection::CConnection(const std::string& host, const std::string& port, const
 {
 }
 
+void CConnection::make_prepared_query(const std::string& queryName, const std::string& query)
+{
+	m_connection.prepare(queryName, query);
+}
+
 std::unique_ptr< pqxx::work > CConnection::getWorker()
 {
 	return std::make_unique< pqxx::work >(m_connection);

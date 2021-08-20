@@ -24,22 +24,24 @@ void execute()
     std::string zipDbName = "ngpNew";
     std::string password = "123456";
 
+    const unsigned int PACK = 500;
+
     CConnection conn(host, port, dbname, user, password);
+    conn.make_prepared_query("select", "SELECT * FROM t_event ORDER BY timestamp DESC LIMIT $1 OFFSET $2");
     std::unique_ptr< pqxx::work > worker = conn.getWorker();
 
     CConnection zipConn(host, port, zipDbName, user, password);
+    zipConn.make_prepared_query("insert", "INSERT INTO t_event(type, subjects, timestamp, zip_event, ts_vector) VALUES($1, $2, $3, $4, $5);");
     //счетчик 
     
     int id = 0;
     while (true)
     {
         std::unique_ptr< pqxx::work > zipWorker = zipConn.getWorker();
-        zipWorker->conn().prepare("insert", "INSERT INTO t_event (type, subjects, timestamp, zip_event, ts_vector) VALUES($1, $2, $3, $4, $5);");
         //сколько было
         //сколько стало
         
-        std::string query = "SELECT * FROM t_event ORDER BY timestamp DESC LIMIT 10000 OFFSET " + std::to_string(id);
-        pqxx::result res = worker->exec(query);
+        pqxx::result res = worker->exec_prepared("select", PACK, id);
 
         if (res.empty())
         {
@@ -58,7 +60,7 @@ void execute()
             }
         }
         zipWorker->commit();
-        id += 10000;
+        id += PACK;
     }
 }
 

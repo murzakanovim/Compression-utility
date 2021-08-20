@@ -15,10 +15,10 @@
 //сделать что-то, что обрабатывает одну запись // есть
 //обрабатывать по 10000 //есть
 
-void execute(pqxx::work& worker, pqxx::work& zipWorker)
+void execute(std::unique_ptr< pqxx::work > worker, std::unique_ptr< pqxx::work > zipWorker)
 {
     //счетчик 
-    zipWorker.conn().prepare("insert", "INSERT INTO t_event (type, subjects, timestamp, zip_event, ts_vector) VALUES($1, $2, $3, $4, $5);");
+    zipWorker->conn().prepare("insert", "INSERT INTO t_event (type, subjects, timestamp, zip_event, ts_vector) VALUES($1, $2, $3, $4, $5);");
     int id = 0;
     while (true)
     {
@@ -26,7 +26,7 @@ void execute(pqxx::work& worker, pqxx::work& zipWorker)
         //сколько стало
         
         std::string query = "SELECT * FROM t_event ORDER BY timestamp DESC LIMIT 10000 OFFSET " + std::to_string(id);
-        pqxx::result res = worker.exec(query);
+        pqxx::result res = worker->exec(query);
 
         if (res.empty())
         {
@@ -44,7 +44,7 @@ void execute(pqxx::work& worker, pqxx::work& zipWorker)
                 std::cerr << "";//
             }
         }
-        zipWorker.commit();
+        zipWorker->commit();
         id += 10000;
     }
 }
@@ -60,13 +60,13 @@ int main()
     try
     {
         CConnection conn(host, port, dbname, user, password);
-        pqxx::work worker = conn.getWorker();
+        std::unique_ptr< pqxx::work > worker = conn.getWorker();
 
         CConnection zipConn(host, port, zipDbName, user, password);
-        pqxx::work zipWorker = zipConn.getWorker();
+        std::unique_ptr< pqxx::work > zipWorker = zipConn.getWorker();
 
-        execute(worker, zipWorker);
-        zipWorker.commit();
+        execute(std::move(worker), std::move(zipWorker));
+        zipWorker->commit();
     }
     catch (const std::exception& exc)
     {

@@ -61,7 +61,8 @@ void execute()
     }
     total += before - after;
 
-    std::fstream out("out.txt");
+    std::fstream out;
+    out.open("out.txt");
     if (out.is_open())
     {
         printInfoAboutMemory(out, total, before, after);

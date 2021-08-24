@@ -3,6 +3,7 @@
 #include <string>
 #include <pqxx/pqxx>
 #include <iostream>
+#include <iomanip>
 
 #include "compress.h"
 #include "CConnection.h"
@@ -21,9 +22,12 @@ void executeOneNote(const pqxx::row& row, pqxx::work& zipWorker, unsigned int& b
 
 void printInfoAboutMemory(std::ostream& out, unsigned int total, unsigned int before, unsigned int after)
 {
+	double percentage = (total * 1.0) / before;
+	
     out << "Total saved memory: " << total << " bytes\n";
     out << "Memory of event before zip: " << before << " bytes\n";
     out << "Memory of event after zip: " << after << " bytes\n";
+	out << "How much memory has decreased in percentage: " << std::setprecision(1) << percentage << " %\n"; 
 }
 
 std::basic_string< std::byte > getZipString(const std::string& event)

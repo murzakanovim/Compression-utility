@@ -2,17 +2,24 @@
 
 #include <string>
 #include <pqxx/pqxx>
+#include <iostream>
 
 #include "compress.h"
 
 void executeOneNote(const pqxx::row& row, pqxx::work& zipWorker)
 {
     std::string event = row.at("event").as< std::string >();
-    auto zipString = getZipString(event);
+    std::basic_string< std::byte > zipString = getZipString(event);
     zipWorker.exec_prepared("insert", row.at("type").as< std::string >(), row.at("subjects").as< std::string >(), row.at("timestamp").as< std::string >(), zipString, row.at("ts_vector").as< std::string >());
 }
 
-std::basic_string_view< std::byte > getZipString(const std::string& event)
+std::basic_string< std::byte > getZipString(const std::string& event)
 {
-    return pqxx::binary_cast(NConsulUtils::zip(event.data(), event.size()));
+    auto zipVec = NConsulUtils::zip(event.data(), event.size());
+    std::basic_string< std::byte > zipString{};
+    for (auto byte : zipVec)
+    {
+        zipString.push_back(std::byte(byte));
+    }
+    return zipString;
 }

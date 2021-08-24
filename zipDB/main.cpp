@@ -18,7 +18,6 @@ void execute()
     std::string zipDbName = "ngpNew";
     std::string password = "123456";
 
-
     const unsigned int PACK = 500;
 
     unsigned int total = 0;
@@ -30,6 +29,7 @@ void execute()
     zipConn.make_prepared_query("insert", "INSERT INTO t_event(type, subjects, timestamp, zip_event, ts_vector) VALUES($1, $2, $3, $4, $5);");
     
     unsigned int id = 0;
+
     while (true)
     {
         std::unique_ptr< pqxx::work > worker = conn.getWorker();

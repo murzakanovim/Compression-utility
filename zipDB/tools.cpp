@@ -23,7 +23,7 @@ std::basic_string< std::byte > getZipString(const std::string& event)
 {
     auto zipVec = NConsulUtils::zip(event.data(), event.size());
     std::basic_string< std::byte > zipString{};
-    for (auto byte : zipVec)
+    for (const auto& byte : zipVec)
     {
         zipString.push_back(std::byte(byte));
     }

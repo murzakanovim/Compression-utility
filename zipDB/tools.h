@@ -1,5 +1,4 @@
-#ifndef TOOLS_H
-#define TOOLS_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -9,7 +8,5 @@
 #include <pqxx/blob>
 
 std::basic_string< std::byte > getZipString(const std::string& event);
-void executeOneNote(const pqxx::row& row, pqxx::work& newWorker);
-//pqxx::blob toBinary(int dec);
+void executeOneNote(const pqxx::row& row, pqxx::work& zipWorker, unsigned int& before, unsigned int& after);
 
-#endif

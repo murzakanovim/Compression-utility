@@ -1,16 +1,18 @@
 #include "CConnection.h"
 
+#include <memory>
+
 CConnection::CConnection(const std::string& host, const std::string& port, const std::string& dbname, const std::string& user, const std::string& password):
 	m_connection("host=" + host + " port=" + port + " dbname=" + dbname + " user=" + user + " password=" + password)
 {
 }
 
-pqxx::work CConnection::getWorker()
+void CConnection::make_prepared_query(const std::string& queryName, const std::string& query)
 {
-	return pqxx::work(m_connection);
+	m_connection.prepare(queryName, query);
 }
 
-void CConnection::make_prepared(const std::string& name, const std::string& query)
+std::unique_ptr< pqxx::work > CConnection::getWorker()
 {
-	m_connection.prepare(name, query);
+	return std::make_unique< pqxx::work >(m_connection);
 }

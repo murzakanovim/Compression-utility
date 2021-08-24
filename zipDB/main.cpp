@@ -10,6 +10,8 @@
 
 void execute()
 {
+    const unsigned int PACK = 1000;
+
     std::string host = "localhost";
     std::string port = "5432";
     std::string dbname = "ngp";
@@ -18,20 +20,19 @@ void execute()
     std::string password = "123456";
 
     CConnection conn(host, port, dbname, user, password);
-    pqxx::work worker = conn.getWorker();
-
     CConnection zipConn(host, port, zipDbName, user, password);
-    pqxx::work zipWorker = zipConn.getWorker();
-
+    zipConn.make_prepared("insert", "INSERT INTO t_event (type, subjects, timestamp, zip_event, ts_vector) VALUES($1, $2, $3, $4, $5);");
+    
     //счетчик 
-    zipWorker.conn().prepare("insert", "INSERT INTO t_event (type, subjects, timestamp, zip_event, ts_vector) VALUES($1, $2, $3, $4, $5);");
     int id = 0;
     while (true)
     {
+        pqxx::work worker = conn.getWorker();
+        pqxx::work zipWorker = zipConn.getWorker();
         //сколько было
         //сколько стало
         
-        std::string query = "SELECT * FROM t_event ORDER BY timestamp DESC LIMIT 10000 OFFSET " + std::to_string(id);
+        std::string query = "SELECT * FROM t_event ORDER BY timestamp DESC LIMIT " + std::to_string(PACK) + " OFFSET " + std::to_string(id);
         pqxx::result res = worker.exec(query);
 
         if (res.empty())
@@ -51,7 +52,7 @@ void execute()
             }
         }
         zipWorker.commit();
-        id += 10000;
+        id += PACK;
     }
 }
 

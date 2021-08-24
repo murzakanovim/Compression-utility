@@ -9,3 +9,8 @@ pqxx::work CConnection::getWorker()
 {
 	return pqxx::work(m_connection);
 }
+
+void CConnection::make_prepared(const std::string& name, const std::string& query)
+{
+	m_connection.prepare(name, query);
+}

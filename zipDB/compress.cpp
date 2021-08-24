@@ -116,9 +116,9 @@ namespace NConsulUtils
         if (ret != Z_OK)
             throw std::runtime_error("Can't setup zlib for decompression!");
 
-        //BOOST_SCOPE_EXIT_ALL(&strm) {
+        BOOST_SCOPE_EXIT_ALL(&strm) {
            inflateEnd(&strm);
-        //};
+        };
 
         strm.avail_in = size;
         strm.next_in = const_cast<Bytef*>(reinterpret_cast<Bytef const*>(data));

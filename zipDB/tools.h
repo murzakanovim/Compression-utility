@@ -9,4 +9,4 @@
 
 std::basic_string< std::byte > getZipString(const std::string& event);
 void executeOneNote(const pqxx::row& row, pqxx::work& zipWorker, unsigned int& before, unsigned int& after);
-
+void printInfoAboutMemory(std::ostream& out, unsigned int total, unsigned int before, unsigned int after);

@@ -19,6 +19,13 @@ void executeOneNote(const pqxx::row& row, pqxx::work& zipWorker, unsigned int& b
     zipWorker.exec_prepared("insert", row.at("type").as< std::string >(), row.at("subjects").as< std::string >(), row.at("timestamp").as< std::string >(), zipString, row.at("ts_vector").as< std::string >());
 }
 
+void printInfoAboutMemory(std::ostream& out, unsigned int total, unsigned int before, unsigned int after)
+{
+    out << "Total saved memory: " << total << " bytes\n";
+    out << "Memory of event before zip: " << before << " bytes\n";
+    out << "Memory of event after zip: " << after << " bytes\n";
+}
+
 std::basic_string< std::byte > getZipString(const std::string& event)
 {
     auto zipVec = NConsulUtils::zip(event.data(), event.size());

@@ -21,6 +21,8 @@ void execute()
     const unsigned int PACK = 500;
 
     unsigned int total = 0;
+    unsigned int before = 0;
+    unsigned int after = 0;
 
     CConnection conn(host, port, dbname, user, password);
     conn.make_prepared_query("select", "SELECT * FROM t_event ORDER BY timestamp DESC LIMIT $1 OFFSET $2");
@@ -35,9 +37,6 @@ void execute()
         std::unique_ptr< pqxx::work > worker = conn.getWorker();
         std::unique_ptr< pqxx::work > zipWorker = zipConn.getWorker();
 
-        unsigned int before = 0;
-        unsigned int after = 0;
-        
         pqxx::result res = worker->exec_prepared("select", PACK, id);
 
         if (res.empty())
@@ -59,11 +58,18 @@ void execute()
 
         zipWorker->commit();
         id += PACK;
-
-        total += before - after;
     }
+    total += before - after;
+
     std::fstream out("out.txt");
-    out << "Total saved memory: " << total << "\n";
+    if (out.is_open())
+    {
+        printInfoAboutMemory(out, total, before, after);
+    }
+    else
+    {
+        printInfoAboutMemory(std::cout, total, before, after);
+    }
 }
 
 int main()

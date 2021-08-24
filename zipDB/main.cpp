@@ -2,7 +2,6 @@
 #include <iostream>
 
 #include <pqxx/pqxx>
-#include <pqxx/except.hxx>
 #include <zlib.h>
 
 #include "CConnection.h"

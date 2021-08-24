@@ -6,7 +6,6 @@
 #include <zlib.h>
 
 #include "CConnection.h"
-#include "column_info_t.h"
 #include "tools.h"
 #include "compress.h"
 

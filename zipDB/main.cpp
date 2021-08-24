@@ -5,7 +5,7 @@
 #include <pqxx/except.hxx>
 #include <zlib.h>
 
-#include "PConnection.h"
+#include "CConnection.h"
 #include "column_info_t.h"
 #include "tools.h"
 #include "compress.h"
@@ -19,10 +19,10 @@ void execute()
     std::string zipDbName = "ngpNew";
     std::string password = "123456";
 
-    PConnection conn(host, port, dbname, user, password);
+    CConnection conn(host, port, dbname, user, password);
     pqxx::work worker = conn.getWorker();
 
-    PConnection zipConn(host, port, zipDbName, user, password);
+    CConnection zipConn(host, port, zipDbName, user, password);
     pqxx::work zipWorker = zipConn.getWorker();
 
     //счетчик 

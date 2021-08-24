@@ -40,7 +40,6 @@ void execute()
         
         pqxx::result res = worker->exec_prepared("select", PACK, id);
 
-
         if (res.empty())
         {
             break;
@@ -62,7 +61,6 @@ void execute()
         id += PACK;
 
         total += before - after;
-
     }
     std::fstream out("out.txt");
     out << "Total saved memory: " << total << "\n";

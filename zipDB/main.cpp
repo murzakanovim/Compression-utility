@@ -19,7 +19,8 @@ void execute()
 
     const unsigned int PACK = 500;
 
-    unsigned int total = 0;//счетчик 
+    unsigned int total = 0;
+
     CConnection conn(host, port, dbname, user, password);
     conn.make_prepared_query("select", "SELECT * FROM t_event ORDER BY timestamp DESC LIMIT $1 OFFSET $2");
 
@@ -29,18 +30,13 @@ void execute()
     unsigned int id = 0;
     while (true)
     {
-        //const std::string selectQuery = "SELECT * FROM t_event ORDER BY timestamp DESC LIMIT " + std::to_string(PACK) + " OFFSET " + std::to_string(id);
         std::unique_ptr< pqxx::work > worker = conn.getWorker();
-
         std::unique_ptr< pqxx::work > zipWorker = zipConn.getWorker();
 
-        unsigned int before = 0;//сколько было
-        unsigned int after = 0;//сколько стало
+        unsigned int before = 0;
+        unsigned int after = 0;
         
         pqxx::result res = worker->exec_prepared("select", PACK, id);
-
-        //pqxx::result res = worker->exec(selectQuery);
-        //worker->commit();
 
         if (res.empty())
         {
@@ -51,7 +47,7 @@ void execute()
         {
             try
             {
-                executeOneNote(row, *zipWorker, before, after);//не нравится
+                executeOneNote(row, *zipWorker);
             }
             catch (const std::exception&)
             {

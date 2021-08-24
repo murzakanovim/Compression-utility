@@ -1,5 +1,6 @@
 ﻿#include <string>
 #include <iostream>
+#include <fstream>
 
 #include <pqxx/pqxx>
 #include <zlib.h>
@@ -47,7 +48,7 @@ void execute()
         {
             try
             {
-                executeOneNote(row, *zipWorker);
+                executeOneNote(row, *zipWorker, before, after);
             }
             catch (const std::exception&)
             {
@@ -59,6 +60,8 @@ void execute()
 
         total += before - after;
     }
+    std::fstream out("out.txt");
+    out << "Total saved memory: " << total << "\n";
 }
 
 int main()

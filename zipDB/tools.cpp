@@ -7,11 +7,14 @@
 #include "compress.h"
 #include "CConnection.h"
 
-
-void executeOneNote(const pqxx::row& row, pqxx::work& zipWorker)
+void executeOneNote(const pqxx::row& row, pqxx::work& zipWorker, unsigned int& before, unsigned int& after)
 {
     std::string event = row.at("event").as< std::string >();
     std::basic_string< std::byte > zipString = getZipString(event);
+
+    before += event.size();
+    after += zipString.size();
+
     zipWorker.exec_prepared("insert", row.at("type").as< std::string >(), row.at("subjects").as< std::string >(), row.at("timestamp").as< std::string >(), zipString, row.at("ts_vector").as< std::string >());
 }
 

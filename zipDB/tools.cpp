@@ -22,7 +22,7 @@ void executeOneNote(const pqxx::row& row, pqxx::work& zipWorker, unsigned int& b
 
 void printInfoAboutMemory(std::ostream& out, unsigned int total, unsigned int before, unsigned int after)
 {
-	double percentage = (total * 1.0) / before;
+	double percentage = ((total * 1.0) / before) * 100;
 	
     out << "Total saved memory: " << total << " bytes\n";
     out << "Memory of event before zip: " << before << " bytes\n";
@@ -32,7 +32,7 @@ void printInfoAboutMemory(std::ostream& out, unsigned int total, unsigned int be
 
 std::basic_string< std::byte > getZipString(const std::string& event)
 {
-    auto zipVec = NConsulUtils::zip(event.data(), event.size());
+    auto zipVec = NConsulUtils::zip(event.data(), event.size(), NConsulUtils::ECompressionLevel::BEST);
     std::basic_string< std::byte > zipString{};
     for (const auto& byte : zipVec)
     {

@@ -18,6 +18,7 @@ void execute()
     std::string zipDbName = "ngpNew";
     std::string password = "123456";
 
+
     const unsigned int PACK = 500;
 
     unsigned int total = 0;
@@ -39,6 +40,7 @@ void execute()
         
         pqxx::result res = worker->exec_prepared("select", PACK, id);
 
+
         if (res.empty())
         {
             break;
@@ -55,10 +57,12 @@ void execute()
                 std::cerr << "Something wrong in LIMIT " + std::to_string(PACK) + " and OFFSET " + std::to_string(id);
             }
         }
+
         zipWorker->commit();
         id += PACK;
 
         total += before - after;
+
     }
     std::fstream out("out.txt");
     out << "Total saved memory: " << total << "\n";

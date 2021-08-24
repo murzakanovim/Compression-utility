@@ -7,6 +7,7 @@
 #include "compress.h"
 #include "CConnection.h"
 
+
 void executeOneNote(const pqxx::row& row, pqxx::work& zipWorker, unsigned int& before, unsigned int& after)
 {
     std::string event = row.at("event").as< std::string >();

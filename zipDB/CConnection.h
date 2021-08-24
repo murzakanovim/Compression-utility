@@ -1,7 +1,6 @@
-#pragma once
-
 #include <string>
 #include <memory>
+
 
 #include <pqxx/connection>
 #include <pqxx/transaction>
@@ -15,3 +14,4 @@ public:
 private:
 	pqxx::connection m_connection;
 };
+

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 
+#include <pqxx/except>
 #include <pqxx/pqxx>
 #include <zlib.h>
 
@@ -50,10 +51,17 @@ void execute()
             {
                 executeOneNote(row, zipWorker, before, after);
             }
+			catch (const pqxx::sql_error& exc)
+			{
+				std::cerr << "Probably problem is sql query\n";
+				std::cerr << exc.what() << '\n';
+				return;
+			}
             catch (const std::exception&)
             {
-                std::cerr << "Something wrong in LIMIT " + std::to_string(PACK) + " and OFFSET " + std::to_string(id);
-            }
+                std::cerr << "Something wrong in LIMIT " + std::to_string(PACK) + " and OFFSET " + std::to_string(id) << '\n';
+				std::cerr << exc.what() << '\n';
+			}
         }
 
         zipWorker->commit();

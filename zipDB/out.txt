@@ -1,4 +1,4 @@
-Total saved memory: 1795755196 bytes
+Total saved memory: 1795788633 bytes
 Memory of event before zip: 3113933661 bytes
-Memory of event after zip: 1318178465 bytes
-How much memory has decreased in percentage: 0.6 %
+Memory of event after zip: 1318145028 bytes
+How much memory has decreased in percentage: 6e+01 %

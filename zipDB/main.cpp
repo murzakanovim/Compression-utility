@@ -34,8 +34,8 @@ void execute()
 
     while (true)
     {
-        std::unique_ptr< pqxx::work > worker = conn.getWorker();
-        std::unique_ptr< pqxx::work > zipWorker = zipConn.getWorker();
+        std::shared_ptr< pqxx::work > worker = conn.getSharedWorker();
+        std::shared_ptr< pqxx::work > zipWorker = zipConn.getSharedWorker();
 
         pqxx::result res = worker->exec_prepared("select", PACK, id);
 
@@ -48,7 +48,7 @@ void execute()
         {
             try
             {
-                executeOneNote(row, *zipWorker, before, after);
+                executeOneNote(row, zipWorker, before, after);
             }
             catch (const std::exception&)
             {

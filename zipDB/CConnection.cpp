@@ -16,3 +16,9 @@ std::unique_ptr< pqxx::work > CConnection::getWorker()
 {
 	return std::make_unique< pqxx::work >(m_connection);
 }
+
+std::shared_ptr< pqxx::work > getSharedWorker()
+{
+	return std::make_shared< pqxx::work >(m_connection);
+}
+

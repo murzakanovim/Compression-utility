@@ -28,7 +28,7 @@ void printInfoAboutMemory(std::ostream& out, unsigned int total, unsigned int be
     out << "Total saved memory: " << total << " bytes\n";
     out << "Memory of event before zip: " << before << " bytes\n";
     out << "Memory of event after zip: " << after << " bytes\n";
-	out << "How much memory has decreased in percentage: " <<  percentage << " %\n"; 
+	out << "How much memory has decreased in percentage: " << std::setprecision(3) <<  percentage << " %\n"; 
 }
 
 std::basic_string< std::byte > getZipString(const std::string& event)

@@ -33,7 +33,7 @@ void printInfoAboutMemory(std::ostream& out, unsigned int total, unsigned int be
 
 std::basic_string< std::byte > getZipString(const std::string& event)
 {
-    auto zipVec = NConsulUtils::gzip(event.data(), event.size(), NConsulUtils::ECompressionLevel::BEST);
+    auto zipVec = NConsulUtils::zip(event.data(), event.size());
     std::basic_string< std::byte > zipString{};
     for (const auto& byte : zipVec)
     {

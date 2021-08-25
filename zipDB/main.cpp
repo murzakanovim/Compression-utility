@@ -53,11 +53,11 @@ void execute()
             }
 			catch (const pqxx::sql_error& exc)
 			{
-				std::cerr << "Probably problem is sql query\n";
+				std::cerr << "Probably problem in sql query\n";
 				std::cerr << exc.what() << '\n';
 				return;
 			}
-            catch (const std::exception&)
+            catch (const std::exception& exc)
             {
                 std::cerr << "Something wrong in LIMIT " + std::to_string(PACK) + " and OFFSET " + std::to_string(id) << '\n';
 				std::cerr << exc.what() << '\n';

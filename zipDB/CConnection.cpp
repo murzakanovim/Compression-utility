@@ -12,13 +12,12 @@ void CConnection::make_prepared_query(const std::string& queryName, const std::s
 	m_connection.prepare(queryName, query);
 }
 
-std::unique_ptr< pqxx::work > CConnection::getWorker()
-{
-	return std::make_unique< pqxx::work >(m_connection);
-}
-
-std::shared_ptr< pqxx::work > getSharedWorker()
+std::shared_ptr<pqxx::work> CConnection::getSharedWorker()
 {
 	return std::make_shared< pqxx::work >(m_connection);
 }
 
+std::unique_ptr< pqxx::work > CConnection::getUniqueWorker()
+{
+	return std::make_unique< pqxx::work >(m_connection);
+}

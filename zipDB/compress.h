@@ -4,8 +4,7 @@
 #include <cstdint>
 #include <vector>
 
-namespace NConsulUtils
-{
+
     enum class ECompressionMethod
     {
         ZIP,
@@ -27,4 +26,4 @@ namespace NConsulUtils
 
     std::vector<uint8_t> gzip(void const* data, size_t size, ECompressionLevel level = ECompressionLevel::NORMAL);
     std::vector<uint8_t> gunzip(void const* data, size_t size);
-}
+

@@ -1,19 +1,17 @@
 #include "compress.h"
 
 #include <cassert>
-#include <zlib.h>
+#include "zlib/zlib.h"
 #include <stdexcept>
 #include <iostream>
 #include <boost/scope_exit.hpp>
 
-namespace
-{
+
     constexpr size_t CHUNK = 16 * 1024;
 
     constexpr std::uint8_t WINDOW_BITS = 15;
     constexpr std::uint8_t GZIP_ENCODING = 16;
 
-    using namespace NConsulUtils;
 
     int convert2zlib(ECompressionLevel level)
     {
@@ -27,10 +25,9 @@ namespace
             throw std::runtime_error("Unsupported compression level");
         }
     }
-} // anonimous namespace
 
-namespace NConsulUtils
-{
+
+
     std::vector<uint8_t> compress(void const* data, size_t size, ECompressionMethod method, ECompressionLevel level)
     {
         if (data == nullptr || size == 0)
@@ -174,4 +171,4 @@ namespace NConsulUtils
     {
         return decompress(data, size, ECompressionMethod::GZIP);
     }
-}
+

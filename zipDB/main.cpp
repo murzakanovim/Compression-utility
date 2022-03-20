@@ -14,10 +14,10 @@ void execute()
 {
     std::string host = "localhost";
     std::string port = "5432";
-    std::string dbname = "ngp";
-    std::string user = "ngp";
-    std::string zipDbName = "ngpNew";
-    std::string password = "123456";
+    std::string dbname = "zlib_data";
+    std::string user = "postgres";
+    std::string zipDbName = "zlib_compressed_data";
+    std::string password = "123";
 
     const unsigned int PACK = 500;
 
